@@ -3,6 +3,20 @@ import { io } from "socket.io-client";
 import robot from "robotjs";
 import dotenv from "dotenv";
 
+function extractTextFromMotionTag(inputString: string): string {
+  // Define the regex to match text within <motion> tags
+  const regex = /<motion>(.*?)<\/motion>/g;
+
+  // Use regex to extract all matches
+  const matches = [];
+  let match;
+  while ((match = regex.exec(inputString)) !== null) {
+    matches.push(match[1]); // Capture group contains the text inside the tags
+  }
+
+  return matches?.[0] ?? "";
+}
+
 // Load environment variables
 dotenv.config();
 
@@ -36,14 +50,10 @@ socket.on(process.env.SOCKET_SERVER_CHANNEL ?? "", (message: string) => {
   console.log("Received message:", message);
 
   // Simulate typing the received text into a Notepad window
-  typeText(message);
+  typeText(extractTextFromMotionTag(message));
 });
 
 // Listen for disconnection
 socket.on("disconnect", () => {
   console.log("Disconnected from socket server");
 });
-
-setTimeout(() => {
-  typeText("Hello");
-}, 5000);
