@@ -50,7 +50,7 @@ socket.on(process.env.SOCKET_SERVER_CHANNEL ?? "", (message: string) => {
   console.log("Received message:", message);
 
   // Simulate typing the received text into a Notepad window
-  typeText(extractTextFromMotionTag(message));
+  typeText(extractTextFromMotionTag(message) || "idle");
 });
 
 // Listen for disconnection
